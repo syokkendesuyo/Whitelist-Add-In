@@ -1,0 +1,19 @@
+name: Whitelist-Add-In
+version: 0.0.1
+main: net.jp.minecraft.plugin.WhitelistAddIn
+commands:
+    wla:
+        description: Whitelist-Add-In
+        usage: /wla
+        permission: smp.setpoint
+        permission-message: You don't have permission (wla.use)
+    whitelist-add-in:
+        description: Whitelist-Add-In
+        usage: /whitlistall
+        permission: smp.setpoint
+        permission-message: You don't have permission (wla.use)
+permissions:
+    wla.use:
+        description: Allow Whitelist-Add-In commands.
+        default: op
+
