@@ -95,16 +95,10 @@ public class WhitelistAddIn extends JavaPlugin implements Listener {
 					on(sender);
 				}
 				else if(args[0].equalsIgnoreCase(command_off)){
+					off(sender);
 				}
 				else if(args[0].equalsIgnoreCase(command_toggle)){
-					if(Bukkit.getServer().hasWhitelist()==true){
-						sender.sendMessage(ChatColor.AQUA + "□ ホワイトリストを無効にしました。");
-						Bukkit.getServer().setWhitelist(false);
-					}
-					else if(Bukkit.getServer().hasWhitelist()==false){
-						sender.sendMessage(ChatColor.AQUA + "□ ホワイトリストを有効にしました。");
-						Bukkit.getServer().setWhitelist(true);
-					}
+					toggle(sender);
 				}
 				else if(args[0].equalsIgnoreCase(command_register)){
 					if(sender.hasPermission("wla.use")){
@@ -300,9 +294,11 @@ public class WhitelistAddIn extends JavaPlugin implements Listener {
 					}
 
 					if(event.getRawSlot()==3){
+						off(player);
 					}
 
 					if(event.getRawSlot()==4){
+						toggle(player);
 					}
 
 					if(event.getRawSlot()==5){
@@ -356,7 +352,17 @@ public class WhitelistAddIn extends JavaPlugin implements Listener {
 			Bukkit.getServer().setWhitelist(false);
 		}
 		else if(Bukkit.getServer().hasWhitelist()==false){
-			sender.sendMessage(ChatColor.GREEN + "□ ホワイトリストは既に無効です。");
+			sender.sendMessage(ChatColor.RED + "□ ホワイトリストは既に無効です。");
+		}
+	}
+	public void toggle (CommandSender sender){
+		if(Bukkit.getServer().hasWhitelist()==true){
+			sender.sendMessage(ChatColor.AQUA + "□ ホワイトリストを"+ ChatColor.RED +"無効"+ ChatColor.AQUA +"にしました。");
+			Bukkit.getServer().setWhitelist(false);
+		}
+		else if(Bukkit.getServer().hasWhitelist()==false){
+			sender.sendMessage(ChatColor.AQUA + "□ ホワイトリストを"+ ChatColor.GREEN +"有効"+ ChatColor.AQUA +"にしました。");
+			Bukkit.getServer().setWhitelist(true);
 		}
 	}
 }
