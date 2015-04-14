@@ -1,5 +1,6 @@
 package net.jp.minecraft.plugin;
 
+import java.io.Console;
 import java.util.Arrays;
 
 import org.bukkit.Bukkit;
@@ -53,11 +54,12 @@ public class WhitelistAddIn extends JavaPlugin implements Listener {
 		String command_register_2 = "@a";
 		String command_removeall = "remove-all";
 		String command_add = "add";
+		String command_adds = "adds";
 		String command_remove = "remove";
 		String command_me = "me";
 
 
-		if(!(sender instanceof Player)){
+		if(!(sender instanceof Player) || !(sender instanceof Console)){
 			sender.sendMessage("Please excute this Whitelist-Add-In command on a game!");
 			sender.sendMessage("Whitelist-Add-In コマンドはゲーム内で実行してください。");
 		}
@@ -118,18 +120,8 @@ public class WhitelistAddIn extends JavaPlugin implements Listener {
 				else if(args[0].equalsIgnoreCase(command_me)){
 					me(sender);
 				}
-				else if(args[0].equalsIgnoreCase("adds")){
-					if(args.length==1){
-						sender.sendMessage(ChatColor.AQUA + "□ /wla adds <名前1> <名前2> ... で<名前1> <名前2> ... をホワイトリストに複数人登録できます");
-					}
-					else{
-						int cnt = 0;
-						for(int n = args.length-1 ; n>cnt ; cnt++){
-							String name = args[cnt+1].toString();
-							Bukkit.getOfflinePlayer(args[cnt+1]).setWhitelisted(true);
-							sender.sendMessage(ChatColor.AQUA + "- " + name + " をホワイトリストに追加しました。");
-						}
-					}
+				else if(args[0].equalsIgnoreCase(command_adds)){
+					adds(sender , args);
 				}
 				return true;
 			}
@@ -152,9 +144,10 @@ public class WhitelistAddIn extends JavaPlugin implements Listener {
 		sender.sendMessage(ChatColor.WHITE + "□ /wla status ：ホワイトリストを有効化");
 		sender.sendMessage(ChatColor.WHITE + "□ /wla on/off ：ホワイトリストが無効化");
 		sender.sendMessage(ChatColor.WHITE + "□ /wla toggle ：ホワイトリストをトグル");
-		sender.sendMessage(ChatColor.WHITE + "□ /wla register/@a ：現在ログイン中のプレイヤーをホワイトリストに登録");
+		sender.sendMessage(ChatColor.WHITE + "□ /wla register・@a ：現在ログイン中のプレイヤーをホワイトリストに登録");
 		sender.sendMessage(ChatColor.WHITE + "□ /wla remove-all ：ホワイトリストに登録されているプレイヤーを全員削除");
-		sender.sendMessage(ChatColor.WHITE + "□ /wla add/remove <名前> ：<名前>をホワイトリストへ追加・削除");
+		sender.sendMessage(ChatColor.WHITE + "□ /wla add・remove <名前> ：<名前>をホワイトリストへ追加・削除");
+		sender.sendMessage(ChatColor.WHITE + "□ /wla adds <名前1> <名前2> ... でホワイトリストに複数人登録できます");
 		sender.sendMessage(ChatColor.WHITE + "□ /wla me ：自分がホワイトリストに所属しているか確認します。");
 		sender.sendMessage(ChatColor.YELLOW + "＝＝＝＝＝ ＝＝＝＝＝＝＝＝＝ ＝＝＝＝＝");
 		sender.sendMessage("");
@@ -193,48 +186,53 @@ public class WhitelistAddIn extends JavaPlugin implements Listener {
 						itemmeta2.setLore(Arrays.asList(ChatColor.YELLOW + "ホワイトリストを有効化します。", ChatColor.WHITE + "/wla on と同様です。"));
 						item2.setItemMeta(itemmeta2);
 
-						/*
 						ItemStack item3 = new ItemStack(Material.COBBLE_WALL);
 						ItemMeta itemmeta3 = item3.getItemMeta();
-						itemmeta3.setDisplayName(ChatColor.GOLD  + "ホワイトリスト変更");
-						itemmeta3.setLore(Arrays.asList(ChatColor.YELLOW + "ホワイトリストをトグルします。", ChatColor.WHITE + "コマンド:", ChatColor.WHITE + "/whitelist <on/off>と同様です。"));
+						itemmeta3.setDisplayName(ChatColor.GOLD  + "無効化");
+						itemmeta3.setLore(Arrays.asList(ChatColor.YELLOW + "ホワイトリストを無効化します。", ChatColor.WHITE + "/wla off と同様です。"));
 						item3.setItemMeta(itemmeta3);
 
 						ItemStack item4 = new ItemStack(Material.WATER_BUCKET);
 						ItemMeta itemmeta4 = item4.getItemMeta();
-						itemmeta4.setDisplayName(ChatColor.GOLD  + "天候の変更");
-						itemmeta4.setLore(Arrays.asList(ChatColor.YELLOW + "現在地のワールドを取得して天候をトグル。", ChatColor.WHITE + "コマンド:", ChatColor.WHITE + "/toggledownfallと同様です。"));
+						itemmeta4.setDisplayName(ChatColor.GOLD  + "トグル");
+						itemmeta4.setLore(Arrays.asList(ChatColor.YELLOW + "ホワイトリストをトグルします。", ChatColor.WHITE + "/wla toggle と同様です。"));
 						item4.setItemMeta(itemmeta4);
 
 						ItemStack item5 = new ItemStack(Material.SKULL_ITEM);
 						ItemMeta itemmeta5 = item5.getItemMeta();
-						itemmeta5.setDisplayName(ChatColor.GOLD  + "自分の頭を取得");
-						itemmeta5.setLore(Arrays.asList(ChatColor.YELLOW + "MobHeadを自分の頭にして取得。", ChatColor.WHITE + "コマンド:", ChatColor.WHITE + "/skull <PlayerID>と同様です。"));
+						itemmeta5.setDisplayName(ChatColor.GOLD  + "一括登録");
+						itemmeta5.setLore(Arrays.asList(ChatColor.YELLOW + "オンラインのプレイヤーをホワイトリストに登録します。。", ChatColor.WHITE + "/wla register・@a と同様です。"));
 						item5.setItemMeta(itemmeta5);
 
 						ItemStack item6 = new ItemStack(Material.APPLE);
 						ItemMeta itemmeta6 = item6.getItemMeta();
-						itemmeta6.setDisplayName(ChatColor.GOLD  + "オペレータ権限変更");
-						itemmeta6.setLore(Arrays.asList(ChatColor.YELLOW + "オペレータ権限をトグルします。", ChatColor.WHITE + "ait.openのパーミッションを保有していない場合", ChatColor.WHITE + "この画面を再度開けなくなります。"));
+						itemmeta6.setDisplayName(ChatColor.GOLD  + "一括削除");
+						itemmeta6.setLore(Arrays.asList(ChatColor.YELLOW + "登録されているプレイヤーを全て削除します。", ChatColor.WHITE + "ait.openのパーミッションを保有していない場合", ChatColor.WHITE + "この画面を再度開けなくなります。"));
 						item6.setItemMeta(itemmeta6);
+
+						ItemStack item7 = new ItemStack(Material.APPLE);
+						ItemMeta itemmeta7 = item7.getItemMeta();
+						itemmeta7.setDisplayName(ChatColor.GOLD  + "自分のステイタス");
+						itemmeta7.setLore(Arrays.asList(ChatColor.YELLOW + "オペレータ権限をトグルします。", ChatColor.WHITE + "ait.openのパーミッションを保有していない場合", ChatColor.WHITE + "この画面を再度開けなくなります。"));
+						item6.setItemMeta(itemmeta7);
 
 						ItemStack close = new ItemStack(Material.STICK);
 						ItemMeta closemeta = close.getItemMeta();
 						closemeta.setDisplayName(ChatColor.GOLD  + "画面を閉じる");
 						closemeta.setLore(Arrays.asList(ChatColor.YELLOW + "この画面を閉じます。", ChatColor.WHITE + "作者:syokkendesuyo", ChatColor.WHITE + "ご利用ありがとうございます。"));
 						close.setItemMeta(closemeta);
-						*/
 
 						//インベントリに配置する
-						Inventory inv = Bukkit.createInventory(p, 9 ," □ホワイトリスト管理画面□ ");
+						Inventory inv = Bukkit.createInventory(p, 18 ," □ホワイトリスト管理画面□ ");
 						inv.setItem(0, item0);
 						inv.setItem(1, item1);
 						inv.setItem(2, item2);
-						//inv.setItem(3, item3);
-						//inv.setItem(4, item4);
-						//inv.setItem(5, item5);
-						//inv.setItem(6, item6);
-						//inv.setItem(8, close);
+						inv.setItem(3, item3);
+						inv.setItem(4, item4);
+						inv.setItem(5, item5);
+						inv.setItem(6, item6);
+						inv.setItem(7, item7);
+						inv.setItem(17, close);
 
 						//インベントリを開ける
 						p.openInventory(inv);
@@ -278,6 +276,7 @@ public class WhitelistAddIn extends JavaPlugin implements Listener {
 					}
 
 					if(event.getRawSlot()==8){
+						me(player);
 					}
 					player.closeInventory();
 					event.setCancelled(true);
@@ -383,6 +382,19 @@ public class WhitelistAddIn extends JavaPlugin implements Listener {
 		}
 		else if(player.isWhitelisted()==false){
 			sender.sendMessage(ChatColor.RED + "□ " + name + " はホワイトリストに登録されていません。");
+		}
+	}
+	public void adds (CommandSender sender , String[] args){
+		if(args.length==1){
+			sender.sendMessage(ChatColor.AQUA + "□ /wla adds <名前1> <名前2> ... でホワイトリストに複数人登録できます");
+		}
+		else{
+			int cnt = 0;
+			for(int n = args.length-1 ; n>cnt ; cnt++){
+				String name = args[cnt+1].toString();
+				Bukkit.getOfflinePlayer(args[cnt+1]).setWhitelisted(true);
+				sender.sendMessage(ChatColor.AQUA + "- " + name + " をホワイトリストに追加しました。");
+			}
 		}
 	}
 }
