@@ -5,15 +5,48 @@ commands:
     wla:
         description: Whitelist-Add-In
         usage: /wla
-        permission: smp.setpoint
-        permission-message: You don't have permission (wla.use)
+        permission: wla.command
+        permission-message: You don't have permission
     whitelist-add-in:
         description: Whitelist-Add-In
-        usage: /whitlistall
-        permission: smp.setpoint
-        permission-message: You don't have permission (wla.use)
+        usage: /whitlist-add-in
+        permission: wla.comman
+        permission-message: You don't have permission
 permissions:
-    wla.use:
+    wla.tool:
+        description: Allow Whitelist-Add-In commands.
+        default: op
+    wla.status:
+        description: Allow Whitelist-Add-In commands.
+        default: op
+    wla.list:
+        description: Allow Whitelist-Add-In commands.
+        default: op
+    wla.on:
+        description: Allow Whitelist-Add-In commands.
+        default: op
+    wla.off:
+        description: Allow Whitelist-Add-In commands.
+        default: op
+    wla.toggle:
+        description: Allow Whitelist-Add-In commands.
+        default: op
+    wla.register:
+        description: Allow Whitelist-Add-In commands.
+        default: op
+    wla.@a:
+        description: Allow Whitelist-Add-In commands.
+        default: op
+    wla.add:
+        description: Allow Whitelist-Add-In commands.
+        default: op
+    wla.remove:
+        description: Allow Whitelist-Add-In commands.
+        default: op
+    wla.me:
+        description: Allow Whitelist-Add-In commands.
+        default: op
+    wla.adds:
         description: Allow Whitelist-Add-In commands.
         default: op
 
