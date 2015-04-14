@@ -101,24 +101,13 @@ public class WhitelistAddIn extends JavaPlugin implements Listener {
 					toggle(sender);
 				}
 				else if(args[0].equalsIgnoreCase(command_register)){
-					if(sender.hasPermission("wla.use")){
-						for (Player player : Bukkit.getServer().getOnlinePlayers()){
-							String name = player.getName();
-							player.setWhitelisted(true);
-							sender.sendMessage(ChatColor.AQUA + "- " + name + " をホワイトリストに追加しました。");
-						}
-						sender.sendMessage(ChatColor.AQUA + "□ ホワイトリストにオンラインの全プレイヤーを追加しました。");
-					}
+					register(sender);
+				}
+				else if(args[0].equalsIgnoreCase(command_register_2)){
+					register(sender);
 				}
 				else if(args[0].equalsIgnoreCase(command_removeall)){
-					if(sender.hasPermission("wla.use")){
-						for (OfflinePlayer player : Bukkit.getServer().getWhitelistedPlayers()){
-							String name = player.getName();
-							player.setWhitelisted(false);
-							sender.sendMessage(ChatColor.AQUA + "- " + name + " をホワイトリストから削除しました。");
-						}
-						sender.sendMessage(ChatColor.AQUA + "□ ホワイトリスに登録されている全プレイヤーを削除しました。");
-					}
+					removeall(sender);
 				}
 				else if(args[0].equalsIgnoreCase(command_add)){
 					if(args.length==1){
@@ -184,7 +173,7 @@ public class WhitelistAddIn extends JavaPlugin implements Listener {
 		sender.sendMessage(ChatColor.WHITE + "□ /wla status ：ホワイトリストを有効化");
 		sender.sendMessage(ChatColor.WHITE + "□ /wla on/off ：ホワイトリストが無効化");
 		sender.sendMessage(ChatColor.WHITE + "□ /wla toggle ：ホワイトリストをトグル");
-		sender.sendMessage(ChatColor.WHITE + "□ /wla register ：現在ログイン中のプレイヤーをホワイトリストに登録");
+		sender.sendMessage(ChatColor.WHITE + "□ /wla register/@a ：現在ログイン中のプレイヤーをホワイトリストに登録");
 		sender.sendMessage(ChatColor.WHITE + "□ /wla remove-all ：ホワイトリストに登録されているプレイヤーを全員削除");
 		sender.sendMessage(ChatColor.WHITE + "□ /wla add/remove <名前> ：<名前>をホワイトリストへ追加・削除");
 		sender.sendMessage(ChatColor.WHITE + "□ /wla me ：自分がホワイトリストに所属しているか確認します。");
@@ -302,9 +291,11 @@ public class WhitelistAddIn extends JavaPlugin implements Listener {
 					}
 
 					if(event.getRawSlot()==5){
+						register(player);
 					}
 
 					if(event.getRawSlot()==6){
+						removeall(player);
 					}
 
 					if(event.getRawSlot()==8){
@@ -363,6 +354,26 @@ public class WhitelistAddIn extends JavaPlugin implements Listener {
 		else if(Bukkit.getServer().hasWhitelist()==false){
 			sender.sendMessage(ChatColor.AQUA + "□ ホワイトリストを"+ ChatColor.GREEN +"有効"+ ChatColor.AQUA +"にしました。");
 			Bukkit.getServer().setWhitelist(true);
+		}
+	}
+	public void register (CommandSender sender){
+		if(sender.hasPermission("wla.use")){
+			for (Player player : Bukkit.getServer().getOnlinePlayers()){
+				String name = player.getName();
+				player.setWhitelisted(true);
+				sender.sendMessage(ChatColor.AQUA + "- " + name + " をホワイトリストに追加しました。");
+			}
+			sender.sendMessage(ChatColor.AQUA + "□ ホワイトリストにオンラインの全プレイヤーを追加しました。");
+		}
+	}
+	public void removeall(CommandSender sender){
+		if(sender.hasPermission("wla.use")){
+			for (OfflinePlayer player : Bukkit.getServer().getWhitelistedPlayers()){
+				String name = player.getName();
+				player.setWhitelisted(false);
+				sender.sendMessage(ChatColor.AQUA + "- " + name + " をホワイトリストから削除しました。");
+			}
+			sender.sendMessage(ChatColor.AQUA + "□ ホワイトリスに登録されている全プレイヤーを削除しました。");
 		}
 	}
 }
