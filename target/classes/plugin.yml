@@ -1,5 +1,5 @@
 name: Whitelist-Add-In
-version: 0.0.1
+version: 0.0.3
 main: net.jp.minecraft.plugin.WhitelistAddIn
 commands:
     wla:

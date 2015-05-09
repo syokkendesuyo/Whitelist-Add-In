@@ -22,8 +22,8 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
 /**
- * よく使うコマンドやアクションをチェスト画面を利用して操作しよう！ってプラグイン
- * AdminInventoryTools
+ * Tabリストの名前に色付けするプラグイン
+ * TabColorManager
  * @author syokkendesuyo
  */
 
@@ -222,11 +222,11 @@ public class WhitelistAddIn extends JavaPlugin implements Listener {
 						//インベントリを開ける
 						p.openInventory(inv);
 					}
+					else{
+						p.sendMessage(ChatColor.RED + "□ パーミッションがありません。");
+					}
 				}
 			}
-		}
-		else{
-			p.sendMessage(ChatColor.RED + "□ パーミッションがありません。");
 		}
 	}
 	@EventHandler
@@ -352,6 +352,8 @@ public class WhitelistAddIn extends JavaPlugin implements Listener {
 	}
 	public void register (CommandSender sender){
 		if(sender.hasPermission("wla.register") || sender.hasPermission("wla.@a")){
+			sender.sendMessage(ChatColor.GRAY + "プレイヤーを登録中...");
+			sender.sendMessage(ChatColor.GRAY + "登録に数秒かかる場合があります");
 			sender.sendMessage(ChatColor.GRAY + "＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝");
 			for (Player player : Bukkit.getServer().getOnlinePlayers()){
 				String name = player.getName();
@@ -367,13 +369,15 @@ public class WhitelistAddIn extends JavaPlugin implements Listener {
 	}
 	public void removeall (CommandSender sender){
 		if(sender.hasPermission("wla.remove-all")){
+			sender.sendMessage(ChatColor.GRAY + "プレイヤーを削除中...");
+			sender.sendMessage(ChatColor.GRAY + "削除に数秒かかる場合があります");
 			sender.sendMessage(ChatColor.GRAY + "＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝");
 			for (OfflinePlayer player : Bukkit.getServer().getWhitelistedPlayers()){
 				String name = player.getName();
 				player.setWhitelisted(false);
 				sender.sendMessage(ChatColor.AQUA + "- " + name + " をホワイトリストから削除しました。");
 			}
-			sender.sendMessage(ChatColor.GREEN + "□ ホワイトリスに登録されている全プレイヤーを削除しました。");
+			sender.sendMessage(ChatColor.GREEN + "□ ホワイトリストに登録されている全プレイヤーを削除しました。");
 			sender.sendMessage(ChatColor.GRAY + "＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝");
 		}
 		else{
@@ -432,12 +436,17 @@ public class WhitelistAddIn extends JavaPlugin implements Listener {
 				sender.sendMessage(ChatColor.AQUA + "□ /wla adds <名前1> <名前2> ... でホワイトリストに複数人登録できます");
 			}
 			else{
+				sender.sendMessage(ChatColor.GRAY + "プレイヤーを登録中...");
+				sender.sendMessage(ChatColor.GRAY + "登録に数秒かかる場合があります");
+				sender.sendMessage(ChatColor.GRAY + "＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝");
 				int cnt = 0;
 				for(int n = args.length-1 ; n>cnt ; cnt++){
 					String name = args[cnt+1].toString();
 					Bukkit.getOfflinePlayer(args[cnt+1]).setWhitelisted(true);
 					sender.sendMessage(ChatColor.AQUA + "- " + name + " をホワイトリストに追加しました。");
 				}
+				sender.sendMessage(ChatColor.GREEN + "□ 登録が完了しました。");
+				sender.sendMessage(ChatColor.GRAY + "＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝");
 			}
 		}
 		else{
